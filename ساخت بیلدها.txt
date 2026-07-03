@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy Bypass -File toolchain/scripts/run-production-builds.ps1
