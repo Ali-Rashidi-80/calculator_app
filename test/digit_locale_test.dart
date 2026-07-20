@@ -17,14 +17,8 @@ void main() {
     });
 
     test('formats display with Persian digits and decimal mark', () {
-      expect(
-        DigitLocale.formatDisplay('42', usePersianDigits: true),
-        '۴۲',
-      );
-      expect(
-        DigitLocale.formatDisplay('3.14', usePersianDigits: true),
-        '۳٫۱۴',
-      );
+      expect(DigitLocale.formatDisplay('42', usePersianDigits: true), '۴۲');
+      expect(DigitLocale.formatDisplay('3.14', usePersianDigits: true), '۳٫۱۴');
     });
   });
 }

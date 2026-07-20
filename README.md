@@ -6,8 +6,8 @@
 </p>
 
 <p align="center">
-  <code>v1.23.0+24</code> ·
-  <code>263 automated tests</code> ·
+  <code>v1.24.0+25</code> ·
+  <code>275 automated tests</code> ·
   <code>Flutter 3.x</code> ·
   <code>minSdk 27</code> ·
   <code>no ads · no cloud</code>
@@ -136,7 +136,7 @@ powershell -ExecutionPolicy Bypass -File toolchain\scripts\verify-flutter-setup.
 
 | گروه | میانبرها |
 |------|-----------|
-| **پیمایش** | Arrow · Home/End · Space/Enter = مساوی · Esc = پاک همه |
+| **پیمایش** | Arrow · Home/End · Space = activate focused key · Enter = equals · Esc = clear all |
 | **ویرایش** | Ctrl+Z/Y · Ctrl+V · Shift+Insert · Backspace · Delete = CE |
 | **حافظه** | Ctrl+M store · Ctrl+P add · Ctrl+Q subtract · Ctrl+R recall · Ctrl+L clear |
 | **تاریخچه** | Ctrl+H panel · Ctrl+Shift+H export · Ctrl+Shift+D clear |
@@ -185,7 +185,7 @@ lib/
 ├── utils/                    # digit_locale · paste_parser · display_format
 └── l10n/                     # app_en.arb · app_fa.arb
 
-test/                         # 263+ tests · round5–round22 QA suites
+test/                         # 275+ tests · round5–round23 QA suites
 toolchain/                    # install scripts · smoke · docs FA
 ```
 
@@ -203,7 +203,8 @@ toolchain/                    # install scripts · smoke · docs FA
 | `Run-SmokeTests.ps1` | toolchain + analyze + test count + builds |
 
 ```powershell
-flutter test                          # همه — باید 263 PASS
+flutter test                          # همه — باید 275 PASS
+flutter test test/round23_qa_test.dart  # polish High bugs
 flutter test test/round22_qa_test.dart  # RTL فارسی
 ```
 
@@ -235,6 +236,7 @@ flutter test test/round22_qa_test.dart  # RTL فارسی
 
 | نسخه | build | یادداشت |
 |------|-------|---------|
+| **1.24.0** | 25 | Paste locale · loadResult · touch lock · % ×/÷ · FA digits toggle |
 | **1.23.0** | 24 | RTL فارسی · مودال میانبرها · settings dialog |
 | 1.20.0 | 21 | multiline paste · Shift+Insert · display menu |
 | 1.15+ | 16+ | ۲۰ دور QA · 170+ نیاز رفع‌شده |
@@ -255,7 +257,7 @@ flutter test test/round22_qa_test.dart  # RTL فارسی
 
 ## English summary
 
-**calculator_app** is a privacy-first, ad-free standard calculator built with Flutter for Web, Windows, and Android 8.1+. It follows Windows Standard left-to-right chaining (not PEMDAS), supports full Persian RTL UI, persistent history, memory, undo/redo, keyboard shortcuts, and 263 automated tests. See `toolchain/docs/` for platform-specific guides.
+**calculator_app** is a privacy-first, ad-free standard calculator built with Flutter for Web, Windows, and Android 8.1+. It follows Windows Standard left-to-right chaining (not PEMDAS), supports full Persian RTL UI, persistent history, memory, undo/redo, keyboard shortcuts, and 275 automated tests. See `toolchain/docs/` for platform-specific guides.
 
 ---
 

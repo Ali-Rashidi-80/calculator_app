@@ -25,7 +25,12 @@ class CalcPersistence {
       final list = jsonDecode(raw) as List<dynamic>;
       return list
           .map((e) => CalcHistoryEntry.fromJson(e as Map<String, dynamic>))
-          .where((e) => e.expression.isNotEmpty && e.result.isNotEmpty && e.id.isNotEmpty)
+          .where(
+            (e) =>
+                e.expression.isNotEmpty &&
+                e.result.isNotEmpty &&
+                e.id.isNotEmpty,
+          )
           .toList();
     } catch (_) {
       return [];
@@ -41,7 +46,9 @@ class CalcPersistence {
     final raw = _prefs.getString(_keySession);
     if (raw == null) return null;
     try {
-      final session = CalculatorSession.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      final session = CalculatorSession.fromJson(
+        jsonDecode(raw) as Map<String, dynamic>,
+      );
       return session.isValid ? session : null;
     } catch (_) {
       return null;
@@ -84,6 +91,7 @@ class CalculatorSession {
   });
 
   final String display;
+
   /// Full-precision value backing [display] after computed results.
   final double? numericValue;
   final double? accumulator;
@@ -93,14 +101,14 @@ class CalculatorSession {
   final double? lastOperand;
 
   Map<String, dynamic> toJson() => {
-        'display': display,
-        'numericValue': numericValue,
-        'accumulator': accumulator,
-        'pendingOp': pendingOp,
-        'freshEntry': freshEntry,
-        'lastOp': lastOp,
-        'lastOperand': lastOperand,
-      };
+    'display': display,
+    'numericValue': numericValue,
+    'accumulator': accumulator,
+    'pendingOp': pendingOp,
+    'freshEntry': freshEntry,
+    'lastOp': lastOp,
+    'lastOperand': lastOperand,
+  };
 
   factory CalculatorSession.fromJson(Map<String, dynamic> json) {
     return CalculatorSession(
@@ -132,13 +140,16 @@ class CalculatorSession {
   /// Reject malformed snapshots (#2458-style invariant violations).
   bool get isValid {
     if (display.isEmpty || display.length > 64) return false;
-    if (numericValue != null && (numericValue!.isNaN || numericValue!.isInfinite)) {
+    if (numericValue != null &&
+        (numericValue!.isNaN || numericValue!.isInfinite)) {
       return false;
     }
-    if (accumulator != null && (accumulator!.isNaN || accumulator!.isInfinite)) {
+    if (accumulator != null &&
+        (accumulator!.isNaN || accumulator!.isInfinite)) {
       return false;
     }
-    if (lastOperand != null && (lastOperand!.isNaN || lastOperand!.isInfinite)) {
+    if (lastOperand != null &&
+        (lastOperand!.isNaN || lastOperand!.isInfinite)) {
       return false;
     }
     if (pendingOp != null && accumulator == null) return false;

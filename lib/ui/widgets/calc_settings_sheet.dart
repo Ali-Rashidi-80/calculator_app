@@ -9,10 +9,7 @@ import 'keyboard_shortcuts_section.dart';
 const _settingsMinWidth = 480.0;
 const _settingsMaxWidth = 560.0;
 
-Future<void> showCalcSettingsSheet(
-  BuildContext context,
-  AppSettings settings,
-) {
+Future<void> showCalcSettingsSheet(BuildContext context, AppSettings settings) {
   final width = MediaQuery.sizeOf(context).width;
   if (width >= 600) {
     return showDialog<void>(
@@ -145,14 +142,8 @@ class CalcSettingsContent extends StatelessWidget {
             const SizedBox(height: 8),
             SegmentedButton<String>(
               segments: [
-                ButtonSegment(
-                  value: 'en',
-                  label: Text(l10n.languageEnglish),
-                ),
-                ButtonSegment(
-                  value: 'fa',
-                  label: Text(l10n.languagePersian),
-                ),
+                ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
+                ButtonSegment(value: 'fa', label: Text(l10n.languagePersian)),
               ],
               selected: {settings.locale?.languageCode ?? 'en'},
               onSelectionChanged: (s) {

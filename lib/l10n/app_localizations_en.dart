@@ -106,7 +106,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get keyboardShortcutNavKeys =>
-      'Arrow keys move focus · Home / End · Space or Enter = equals · Esc = clear all';
+      'Arrow keys move focus · Home / End · Space = activate focused key · Enter = equals · Esc = clear all';
 
   @override
   String get keyboardShortcutEdit => 'Edit';

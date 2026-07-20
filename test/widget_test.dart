@@ -60,7 +60,10 @@ void main() {
     await tester.pump();
 
     expect(find.text('Cannot divide by zero'), findsOneWidget);
-    expect(tester.widget<Text>(find.byKey(const Key('display'))).data, 'Cannot divide by zero');
+    expect(
+      tester.widget<Text>(find.byKey(const Key('display'))).data,
+      'Cannot divide by zero',
+    );
   });
 
   testWidgets('clear button resets display', (WidgetTester tester) async {
@@ -77,7 +80,9 @@ void main() {
     expect(tester.widget<Text>(find.byKey(const Key('display'))).data, '0');
   });
 
-  testWidgets('expression line shows pending operation', (WidgetTester tester) async {
+  testWidgets('expression line shows pending operation', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -91,7 +96,10 @@ void main() {
     await tester.tap(find.byKey(const Key('btn_add')));
     await tester.pump();
 
-    expect(tester.widget<Text>(find.byKey(const Key('expression'))).data, '12 +');
+    expect(
+      tester.widget<Text>(find.byKey(const Key('expression'))).data,
+      '12 +',
+    );
   });
 
   testWidgets('keyboard digit updates display', (WidgetTester tester) async {
@@ -123,7 +131,9 @@ void main() {
     expect(tester.widget<Text>(find.byKey(const Key('display'))).data, '5');
   });
 
-  testWidgets('percent button divides display by 100', (WidgetTester tester) async {
+  testWidgets('percent button divides display by 100', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -139,7 +149,9 @@ void main() {
     expect(tester.widget<Text>(find.byKey(const Key('display'))).data, '0.5');
   });
 
-  testWidgets('keyboard minus and Enter evaluate expression', (WidgetTester tester) async {
+  testWidgets('keyboard minus and Enter evaluate expression', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -185,7 +197,9 @@ void main() {
     expect(tester.widget<Text>(find.byKey(const Key('display'))).data, '-5');
   });
 
-  testWidgets('decimal button builds fractional display', (WidgetTester tester) async {
+  testWidgets('decimal button builds fractional display', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -201,7 +215,9 @@ void main() {
     expect(tester.widget<Text>(find.byKey(const Key('display'))).data, '3.5');
   });
 
-  testWidgets('multiply via keypad matches backend', (WidgetTester tester) async {
+  testWidgets('multiply via keypad matches backend', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
@@ -235,7 +251,9 @@ void main() {
     expect(tester.widget<Text>(find.byKey(const Key('display'))).data, '1');
   });
 
-  testWidgets('after divide-by-zero error next digit starts fresh', (WidgetTester tester) async {
+  testWidgets('after divide-by-zero error next digit starts fresh', (
+    WidgetTester tester,
+  ) async {
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);

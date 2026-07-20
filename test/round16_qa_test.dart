@@ -79,7 +79,9 @@ void main() {
   });
 
   group('Empty history export feedback', () {
-    testWidgets('Ctrl+Shift+H with no history shows empty message', (tester) async {
+    testWidgets('Ctrl+Shift+H with no history shows empty message', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(390, 844));
       await pumpCalculatorApp(tester);
 

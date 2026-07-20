@@ -22,11 +22,14 @@ void main() {
       );
     });
 
-    test('copyPlainText from calculator with Persian-formatted display path', () {
-      final c = Calculator();
-      c.pasteFromText('1234567.89');
-      expect(c.copyPlainText, '1234567.89');
-    });
+    test(
+      'copyPlainText from calculator with Persian-formatted display path',
+      () {
+        final c = Calculator();
+        c.pasteFromText('1234567.89');
+        expect(c.copyPlainText, '1234567.89');
+      },
+    );
   });
 
   group('Comma / Arabic decimal keyboard', () {

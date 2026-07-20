@@ -35,7 +35,9 @@ class CalcHistoryPanel extends StatelessWidget {
       color: Colors.transparent,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+          color: theme.colorScheme.surfaceContainerHighest.withValues(
+            alpha: 0.45,
+          ),
           borderRadius: BorderRadius.circular(compact ? 20 : 24),
           border: Border.all(
             color: theme.colorScheme.outlineVariant.withValues(alpha: 0.35),
@@ -47,11 +49,13 @@ class CalcHistoryPanel extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.fromSTEB(16, 14, 8, 8),
               child: Row(
-                textDirection:
-                    isRtl ? TextDirection.rtl : TextDirection.ltr,
+                textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
                 children: [
-                  Icon(Icons.history,
-                      size: 20, color: theme.colorScheme.primary),
+                  Icon(
+                    Icons.history,
+                    size: 20,
+                    color: theme.colorScheme.primary,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -113,7 +117,12 @@ class CalcHistoryPanel extends StatelessWidget {
                     )
                   : ListView.separated(
                       key: const Key('history_list'),
-                      padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 12),
+                      padding: const EdgeInsetsDirectional.fromSTEB(
+                        12,
+                        0,
+                        12,
+                        12,
+                      ),
                       itemCount: entries.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 4),
                       itemBuilder: (context, index) {
@@ -163,7 +172,10 @@ class _HistoryTile extends StatelessWidget {
           color: theme.colorScheme.errorContainer,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Text(l10n.deleteHistoryItem, style: TextStyle(color: theme.colorScheme.onErrorContainer)),
+        child: Text(
+          l10n.deleteHistoryItem,
+          style: TextStyle(color: theme.colorScheme.onErrorContainer),
+        ),
       ),
       child: Semantics(
         button: true,
@@ -179,31 +191,31 @@ class _HistoryTile extends StatelessWidget {
                 ? () => onCopyResult!(entry.result)
                 : null,
             child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  entry.expression,
-                  textAlign: TextAlign.end,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontFeatures: const [FontFeature.tabularFigures()],
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    entry.expression,
+                    textAlign: TextAlign.end,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
                   ),
-                ),
-                Text(
-                  '= ${entry.result}',
-                  textAlign: TextAlign.end,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontFeatures: const [FontFeature.tabularFigures()],
+                  Text(
+                    '= ${entry.result}',
+                    textAlign: TextAlign.end,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-      ),
       ),
     );
   }

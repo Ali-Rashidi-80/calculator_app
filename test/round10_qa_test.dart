@@ -51,7 +51,9 @@ void main() {
   });
 
   group('Running total UI', () {
-    testWidgets('running total visible during chain when enabled', (tester) async {
+    testWidgets('running total visible during chain when enabled', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(390, 844));
       await pumpCalculatorApp(tester);
 
@@ -81,7 +83,9 @@ void main() {
   });
 
   group('High contrast keypad (#2182 / WCAG)', () {
-    testWidgets('buttons show outline border in high contrast mode', (tester) async {
+    testWidgets('buttons show outline border in high contrast mode', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(390, 844));
       await tester.pumpWidget(
         MaterialApp(
@@ -93,9 +97,7 @@ void main() {
             ),
             child: Scaffold(
               body: Row(
-                children: [
-                  CalcButton(label: '7', id: '7', onTap: _noop),
-                ],
+                children: [CalcButton(label: '7', id: '7', onTap: _noop)],
               ),
             ),
           ),

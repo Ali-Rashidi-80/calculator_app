@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 /// Persisted theme + locale preferences.
 
 class AppSettings extends ChangeNotifier {
-
   AppSettings._(this._prefs);
-
-
 
   static const _keyTheme = 'theme_mode';
 
@@ -26,8 +21,6 @@ class AppSettings extends ChangeNotifier {
 
   static const _keyTouchLock = 'touch_lock';
   static const _keyRunningTotal = 'show_running_total';
-
-
 
   final SharedPreferences _prefs;
 
@@ -46,8 +39,6 @@ class AppSettings extends ChangeNotifier {
   bool _touchLock = false;
   bool _showRunningTotal = true;
 
-
-
   ThemeMode get themeMode => _themeMode;
 
   Locale? get locale => _locale;
@@ -65,18 +56,10 @@ class AppSettings extends ChangeNotifier {
 
   bool get touchInputEnabled => !_touchLock;
 
-
-
-  /// Whether UI should show Eastern Arabic digits.
-
-  bool get usePersianDigits =>
-
-      _persianDigits || _locale?.languageCode == 'fa';
-
-
+  /// Whether UI should show Eastern Arabic digits (independent of locale).
+  bool get usePersianDigits => _persianDigits;
 
   static Future<AppSettings> load() async {
-
     final prefs = await SharedPreferences.getInstance();
 
     final settings = AppSettings._(prefs);
@@ -84,17 +67,13 @@ class AppSettings extends ChangeNotifier {
     final themeIndex = prefs.getInt(_keyTheme);
 
     if (themeIndex != null && themeIndex >= 0 && themeIndex <= 2) {
-
       settings._themeMode = ThemeMode.values[themeIndex];
-
     }
 
     final code = prefs.getString(_keyLocale);
 
     if (code == 'en' || code == 'fa') {
-
       settings._locale = Locale(code!);
-
     }
 
     settings._hapticsEnabled = prefs.getBool(_keyHaptics) ?? true;
@@ -103,19 +82,16 @@ class AppSettings extends ChangeNotifier {
 
     settings._restoreSession = prefs.getBool(_keyRestoreSession) ?? true;
 
-    settings._persianDigits = prefs.getBool(_keyPersianDigits) ?? (code == 'fa');
+    settings._persianDigits =
+        prefs.getBool(_keyPersianDigits) ?? (code == 'fa');
 
     settings._touchLock = prefs.getBool(_keyTouchLock) ?? false;
     settings._showRunningTotal = prefs.getBool(_keyRunningTotal) ?? true;
 
     return settings;
-
   }
 
-
-
   Future<void> setThemeMode(ThemeMode mode) async {
-
     if (_themeMode == mode) return;
 
     _themeMode = mode;
@@ -123,35 +99,33 @@ class AppSettings extends ChangeNotifier {
     await _prefs.setInt(_keyTheme, mode.index);
 
     notifyListeners();
-
   }
 
-
-
   Future<void> setLocale(Locale? locale) async {
-
     if (_locale == locale) return;
+
+    final switchingToFa =
+        locale?.languageCode == 'fa' && _locale?.languageCode != 'fa';
 
     _locale = locale;
 
     if (locale == null) {
-
       await _prefs.remove(_keyLocale);
-
     } else {
-
       await _prefs.setString(_keyLocale, locale.languageCode);
+    }
 
+    // First-time entry into FA (no stored preference) defaults digits ON.
+    // Re-entry after an explicit choice must preserve that preference.
+    if (switchingToFa && !_prefs.containsKey(_keyPersianDigits)) {
+      _persianDigits = true;
+      await _prefs.setBool(_keyPersianDigits, true);
     }
 
     notifyListeners();
-
   }
 
-
-
   Future<void> setHapticsEnabled(bool enabled) async {
-
     if (_hapticsEnabled == enabled) return;
 
     _hapticsEnabled = enabled;
@@ -159,13 +133,9 @@ class AppSettings extends ChangeNotifier {
     await _prefs.setBool(_keyHaptics, enabled);
 
     notifyListeners();
-
   }
 
-
-
   Future<void> setPersistHistory(bool enabled) async {
-
     if (_persistHistory == enabled) return;
 
     _persistHistory = enabled;
@@ -173,13 +143,9 @@ class AppSettings extends ChangeNotifier {
     await _prefs.setBool(_keyPersistHistory, enabled);
 
     notifyListeners();
-
   }
 
-
-
   Future<void> setRestoreSession(bool enabled) async {
-
     if (_restoreSession == enabled) return;
 
     _restoreSession = enabled;
@@ -187,13 +153,9 @@ class AppSettings extends ChangeNotifier {
     await _prefs.setBool(_keyRestoreSession, enabled);
 
     notifyListeners();
-
   }
 
-
-
   Future<void> setPersianDigits(bool enabled) async {
-
     if (_persianDigits == enabled) return;
 
     _persianDigits = enabled;
@@ -201,10 +163,7 @@ class AppSettings extends ChangeNotifier {
     await _prefs.setBool(_keyPersianDigits, enabled);
 
     notifyListeners();
-
   }
-
-
 
   Future<void> setTouchLock(bool enabled) async {
     if (_touchLock == enabled) return;

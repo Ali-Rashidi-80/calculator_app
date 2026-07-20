@@ -49,7 +49,9 @@ void main() {
   });
 
   group('Enter after history (#1810 — not re-open history)', () {
-    testWidgets('Enter repeats last op after closing history sheet', (tester) async {
+    testWidgets('Enter repeats last op after closing history sheet', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(390, 844));
       await pumpCalculatorApp(tester);
 

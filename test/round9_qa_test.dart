@@ -75,8 +75,10 @@ void main() {
       await tester.pumpWidget(CalculatorApp(settings: settings));
       await tester.pumpAndSettle();
 
-      expect(tester.widget<MaterialApp>(find.byType(MaterialApp)).themeMode,
-          ThemeMode.light);
+      expect(
+        tester.widget<MaterialApp>(find.byType(MaterialApp)).themeMode,
+        ThemeMode.light,
+      );
       expect(tester.takeException(), isNull);
 
       await tapCalc(tester, '3');
@@ -88,7 +90,9 @@ void main() {
   });
 
   group('Memory survives pause (#2118)', () {
-    testWidgets('memory and display persist after pause relaunch', (tester) async {
+    testWidgets('memory and display persist after pause relaunch', (
+      tester,
+    ) async {
       SharedPreferences.setMockInitialValues({});
       setTestViewport(tester, const Size(390, 844));
 

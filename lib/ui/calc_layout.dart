@@ -31,9 +31,15 @@ class CalcLayout {
   bool get showKeyboardShortcutsButton => width >= 840;
 
   EdgeInsets get pagePadding {
-    if (width >= 1280) return const EdgeInsets.symmetric(horizontal: 32, vertical: 12);
-    if (width >= 720) return const EdgeInsets.symmetric(horizontal: 24, vertical: 8);
-    if (width >= 360) return const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+    if (width >= 1280) {
+      return const EdgeInsets.symmetric(horizontal: 32, vertical: 12);
+    }
+    if (width >= 720) {
+      return const EdgeInsets.symmetric(horizontal: 24, vertical: 8);
+    }
+    if (width >= 360) {
+      return const EdgeInsets.symmetric(horizontal: 12, vertical: 8);
+    }
     return const EdgeInsets.symmetric(horizontal: 8, vertical: 6);
   }
 

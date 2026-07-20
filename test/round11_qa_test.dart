@@ -62,7 +62,9 @@ void main() {
   });
 
   group('History export UI', () {
-    testWidgets('export button visible when history has entries', (tester) async {
+    testWidgets('export button visible when history has entries', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(1280, 900));
       await pumpCalculatorApp(tester);
 

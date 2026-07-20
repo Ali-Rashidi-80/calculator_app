@@ -6,14 +6,17 @@ import 'test_helpers.dart';
 /// Round 22 — Persian RTL layout polish.
 void main() {
   group('Persian RTL chrome', () {
-    testWidgets('toolbar icons on right (leading) in fa locale', (tester) async {
+    testWidgets('toolbar icons on right (leading) in fa locale', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(1280, 800));
       await pumpCalculatorApp(tester, locale: const Locale('fa'));
 
       expect(find.byKey(const Key('btn_settings')), findsOneWidget);
 
-      final settingsCenter =
-          tester.getCenter(find.byKey(const Key('btn_settings')));
+      final settingsCenter = tester.getCenter(
+        find.byKey(const Key('btn_settings')),
+      );
       expect(settingsCenter.dx, greaterThan(640));
     });
 
@@ -32,8 +35,12 @@ void main() {
 
       await tapCalc(tester, '1');
 
-      final backspace = tester.getTopRight(find.byKey(const Key('btn_backspace')));
-      final display = tester.getTopRight(find.byKey(const Key('display_gesture')));
+      final backspace = tester.getTopRight(
+        find.byKey(const Key('btn_backspace')),
+      );
+      final display = tester.getTopRight(
+        find.byKey(const Key('display_gesture')),
+      );
       expect(backspace.dx, greaterThanOrEqualTo(display.dx - 8));
     });
 

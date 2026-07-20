@@ -40,7 +40,9 @@ void main() {
       expect(displayText(tester), '6');
     });
 
-    testWidgets('Escape clears and keyboard still accepts digits', (tester) async {
+    testWidgets('Escape clears and keyboard still accepts digits', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(1280, 800));
       await pumpCalculatorApp(tester);
 
@@ -57,8 +59,9 @@ void main() {
   });
 
   group('Persistence lifecycle (honest SharedPreferences)', () {
-    testWidgets('session restores on relaunch when restoreSession enabled',
-        (tester) async {
+    testWidgets('session restores on relaunch when restoreSession enabled', (
+      tester,
+    ) async {
       SharedPreferences.setMockInitialValues({});
       setTestViewport(tester, const Size(390, 844));
 
@@ -133,7 +136,9 @@ void main() {
 
       await tapCalc(tester, '2');
       await tapCalc(tester, 'add');
-      final addBtn = tester.widget<CalcButton>(find.byKey(const Key('btn_add')));
+      final addBtn = tester.widget<CalcButton>(
+        find.byKey(const Key('btn_add')),
+      );
       expect(addBtn.selected, isTrue);
     });
   });

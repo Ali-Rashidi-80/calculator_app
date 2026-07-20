@@ -55,7 +55,9 @@ void main() {
       );
     });
 
-    testWidgets('Persian locale shows Persian digits on display', (tester) async {
+    testWidgets('Persian locale shows Persian digits on display', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(390, 844));
       await pumpCalculatorApp(tester, locale: const Locale('fa'));
 

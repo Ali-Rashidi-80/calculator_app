@@ -31,7 +31,7 @@
   "keyboardShortcutsTitle": "میانبرهای کیبورد",
   "keyboardShortcutsTooltip": "میانبرهای کیبورد",
   "keyboardShortcutNav": "پیمایش",
-  "keyboardShortcutNavKeys": "فلش‌ها = جابجایی فوکوس · Home / End · Space یا Enter = مساوی · Esc = پاک همه",
+  "keyboardShortcutNavKeys": "فلش‌ها = جابجایی فوکوس · Home / End · Space = فعال‌سازی کلید فوکوس‌شده · Enter = مساوی · Esc = پاک همه",
   "keyboardShortcutEdit": "ویرایش",
   "keyboardShortcutEditKeys": "Ctrl+Z بازگشت · Ctrl+Y بازانجام · Ctrl+V چسباندن · Shift+Insert چسباندن · Backspace · Delete = پاک ورودی",
   "keyboardShortcutMemory": "حافظه",

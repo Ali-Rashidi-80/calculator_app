@@ -14,6 +14,7 @@ class Calculator {
   static const double _sciThresholdLow = 1e-7;
 
   String _display = '0';
+
   /// Full-precision value when display came from a computed result (not typed digits).
   double? _numericValue;
   double? _accumulator;
@@ -51,8 +52,7 @@ class Calculator {
       !_display.contains('.') &&
       !(_atMaxLength && !_freshEntry && _display != '0');
 
-  bool get canInputDigit =>
-      !(_atMaxLength && !_freshEntry && _display != '0');
+  bool get canInputDigit => !(_atMaxLength && !_freshEntry && _display != '0');
 
   bool get canBackspace => !_freshEntry;
 
@@ -100,14 +100,14 @@ class Calculator {
   }
 
   CalculatorSession exportSession() => CalculatorSession(
-        display: _display,
-        numericValue: _numericValue,
-        accumulator: _accumulator,
-        pendingOp: _pendingOp,
-        freshEntry: _freshEntry,
-        lastOp: _lastOp,
-        lastOperand: _lastOperand,
-      );
+    display: _display,
+    numericValue: _numericValue,
+    accumulator: _accumulator,
+    pendingOp: _pendingOp,
+    freshEntry: _freshEntry,
+    lastOp: _lastOp,
+    lastOperand: _lastOperand,
+  );
 
   void loadHistory(List<CalcHistoryEntry> entries) {
     history.loadEntries(entries);
@@ -124,6 +124,8 @@ class Calculator {
     _freshEntry = true;
     _accumulator = null;
     _pendingOp = null;
+    _lastOp = null;
+    _lastOperand = null;
   }
 
   /// Parse display/history text — Persian digits, ٫/، decimal, unicode minus.
@@ -150,7 +152,9 @@ class Calculator {
 
   void inputDigit(String digit) {
     final d = DigitLocale.normalizeToAscii(digit);
-    if (d.length != 1 || d.codeUnitAt(0) < 0x30 || d.codeUnitAt(0) > 0x39) return;
+    if (d.length != 1 || d.codeUnitAt(0) < 0x30 || d.codeUnitAt(0) > 0x39) {
+      return;
+    }
     if (_atMaxLength && !_freshEntry && _display != '0') return;
     if (_freshEntry || _display == '0') {
       _recordUndo();
@@ -263,14 +267,21 @@ class Calculator {
     }
   }
 
-  /// Windows Standard: `50+10%` → 5 on display, `=` → 55. Plain `%` divides by 100.
+  /// Windows Standard: `50+10%` → 5 on display, `=` → 55.
+  /// For ×/÷ pending ops, `%` is `value / 100` only (`50×10%` → 0.1, `=` → 5).
+  /// Plain `%` divides current display by 100.
   void percent() {
     final value = _parseDisplay();
     if (value == null) return;
     _recordUndo();
 
     if (_accumulator != null && _pendingOp != null) {
-      _setDisplayValue(_accumulator! * value / 100);
+      final next = switch (_pendingOp!) {
+        '+' || '-' => _accumulator! * value / 100,
+        '×' || '÷' || '*' || '/' => value / 100,
+        _ => value / 100,
+      };
+      _setDisplayValue(next);
       _freshEntry = true;
       return;
     }
@@ -380,10 +391,8 @@ class Calculator {
     _display = formatted ?? _format(value);
   }
 
-  CalcUndoSnapshot captureSnapshot() => CalcUndoSnapshot(
-        session: exportSession(),
-        memory: _memory,
-      );
+  CalcUndoSnapshot captureSnapshot() =>
+      CalcUndoSnapshot(session: exportSession(), memory: _memory);
 
   void restoreSnapshot(CalcUndoSnapshot snapshot) {
     _undoSuspended = true;
@@ -443,7 +452,9 @@ class Calculator {
     final abs = snapped.abs();
     if (abs >= _sciThresholdHigh || (abs > 0 && abs < _sciThresholdLow)) {
       final exp = snapped.toStringAsExponential(6);
-      return exp.replaceAll(RegExp(r'0+e'), 'e').replaceAll(RegExp(r'\.e'), 'e');
+      return exp
+          .replaceAll(RegExp(r'0+e'), 'e')
+          .replaceAll(RegExp(r'\.e'), 'e');
     }
 
     if (snapped == snapped.roundToDouble()) {
@@ -453,7 +464,4 @@ class Calculator {
   }
 }
 
-enum CalculatorError implements Exception {
-  divisionByZero,
-  overflow,
-}
+enum CalculatorError implements Exception { divisionByZero, overflow }

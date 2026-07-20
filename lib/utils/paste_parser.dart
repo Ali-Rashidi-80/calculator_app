@@ -25,24 +25,62 @@ abstract final class PasteParser {
         .replaceAll(':', '/')
         .replaceAll(' ', '');
 
-    if (!_allowedChars.hasMatch(s)) return (value: null, trimmed: false);
-
+    // Locale paste first (MS #2396) — allow `,` / mixed thousands before gate.
     if (!s.contains(RegExp(r'[+\-*/]'))) {
-      final trimmed = _digitCount(s) > maxPasteDigits;
-      if (trimmed) {
-        s = _limitDigits(s, maxPasteDigits);
+      final normalized = DigitLocale.normalizePaste(s);
+      if (normalized.isEmpty) return (value: null, trimmed: false);
+      if (!_allowedChars.hasMatch(normalized)) {
+        return (value: null, trimmed: false);
       }
-      final single = DigitLocale.normalizePaste(s);
-      if (single.isEmpty) return (value: null, trimmed: false);
-      final value = double.tryParse(single);
+      var limited = normalized;
+      final trimmed = _digitCount(limited) > maxPasteDigits;
+      if (trimmed) {
+        limited = _limitDigits(limited, maxPasteDigits);
+      }
+      final value = double.tryParse(limited);
       if (value == null || value.isNaN || value.isInfinite) {
         return (value: null, trimmed: false);
       }
       return (value: value, trimmed: trimmed);
     }
 
+    // Expression path: normalize each numeric token (not the whole string).
+    s = _normalizeExpressionSeparators(s);
+    if (!_allowedChars.hasMatch(s)) return (value: null, trimmed: false);
+
     final value = _evaluateLtr(s);
     return (value: value, trimmed: false);
+  }
+
+  /// Apply [DigitLocale.normalizePaste] to each numeric token in an expression.
+  static String _normalizeExpressionSeparators(String s) {
+    final buf = StringBuffer();
+    final token = StringBuffer();
+
+    void flush() {
+      if (token.isEmpty) return;
+      buf.write(DigitLocale.normalizePaste(token.toString()));
+      token.clear();
+    }
+
+    for (var i = 0; i < s.length; i++) {
+      final c = s[i];
+      if ('+-*/'.contains(c)) {
+        if (c == '-' && token.isEmpty) {
+          final soFar = buf.toString();
+          if (soFar.isEmpty || '+-*/'.contains(soFar[soFar.length - 1])) {
+            token.write(c);
+            continue;
+          }
+        }
+        flush();
+        buf.write(c);
+      } else {
+        token.write(c);
+      }
+    }
+    flush();
+    return buf.toString();
   }
 
   static double? evaluate(String raw) => evaluateDetailed(raw).value;

@@ -19,10 +19,7 @@ void main() {
 
     test('calculator paste sets lastPasteTrimmed', () {
       final c = Calculator();
-      expect(
-        c.pasteFromText('123456789012345678901234567890'),
-        isTrue,
-      );
+      expect(c.pasteFromText('123456789012345678901234567890'), isTrue);
       expect(c.lastPasteTrimmed, isTrue);
     });
 
@@ -45,11 +42,11 @@ void main() {
     testWidgets('Ctrl+V with empty clipboard shows hint', (tester) async {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(SystemChannels.platform, (call) async {
-        if (call.method == 'Clipboard.getData') {
-          return null;
-        }
-        return null;
-      });
+            if (call.method == 'Clipboard.getData') {
+              return null;
+            }
+            return null;
+          });
       addTearDown(() {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(SystemChannels.platform, null);

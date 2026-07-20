@@ -29,24 +29,57 @@ class DigitLocale {
     return buf.toString();
   }
 
-  /// Normalize pasted numbers: ASCII digits, comma/dot decimal rules.
+  /// Normalize pasted numbers: ASCII digits, locale-aware comma/dot rules (MS #2396).
+  ///
+  /// - Only `,` → last comma is decimal (`3,14` → `3.14`)
+  /// - Only `.` → keep as decimal (`3.14`)
+  /// - Both → last separator is decimal, earlier ones are thousands
+  ///   (`1.234,56` → `1234.56`, `1,234.56` → `1234.56`)
   static String normalizePaste(String raw) {
     var s = normalizeToAscii(raw.trim());
     if (s.isEmpty) return s;
 
-    final hasDot = s.contains('.');
-    final hasComma = s.contains(',');
+    final lastDot = s.lastIndexOf('.');
+    final lastComma = s.lastIndexOf(',');
 
-    if (hasComma && !hasDot) {
-      // "3,14" or "1.234,56" after normalize — treat last comma as decimal
-      final lastComma = s.lastIndexOf(',');
+    if (lastDot < 0 && lastComma < 0) return s;
+
+    if (lastComma >= 0 && lastDot < 0) {
       final before = s.substring(0, lastComma).replaceAll(',', '');
-      final after = s.substring(lastComma + 1);
-      s = '$before.$after';
-    } else {
-      s = s.replaceAll(',', '');
+      final after = s.substring(lastComma + 1).replaceAll(',', '');
+      return '$before.$after';
     }
-    return s;
+
+    if (lastDot >= 0 && lastComma < 0) {
+      // Keep last dot as decimal; strip earlier dots (thousands) if any.
+      if ('.'.allMatches(s).length == 1) return s;
+      final before = s.substring(0, lastDot).replaceAll('.', '');
+      final after = s.substring(lastDot + 1).replaceAll('.', '');
+      return '$before.$after';
+    }
+
+    // Both present: last separator wins as decimal.
+    if (lastComma > lastDot) {
+      final before = s
+          .substring(0, lastComma)
+          .replaceAll(',', '')
+          .replaceAll('.', '');
+      final after = s
+          .substring(lastComma + 1)
+          .replaceAll(',', '')
+          .replaceAll('.', '');
+      return '$before.$after';
+    }
+
+    final before = s
+        .substring(0, lastDot)
+        .replaceAll(',', '')
+        .replaceAll('.', '');
+    final after = s
+        .substring(lastDot + 1)
+        .replaceAll(',', '')
+        .replaceAll('.', '');
+    return '$before.$after';
   }
 
   static String toPersianDigits(String ascii) {
@@ -70,8 +103,8 @@ class DigitLocale {
 
   /// ASCII plain text for clipboard (Persian digits + ٫ → 0-9 and `.`).
   static String toClipboardAscii(String display) {
-    return normalizeToAscii(display)
-        .replaceAll('\u066B', '.')
-        .replaceAll(',', '.');
+    return normalizeToAscii(
+      display,
+    ).replaceAll('\u066B', '.').replaceAll(',', '.');
   }
 }

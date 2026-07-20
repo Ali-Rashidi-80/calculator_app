@@ -21,6 +21,8 @@ class CalcDisplayPanel extends StatelessWidget {
     this.copyLabel,
     this.pasteLabel,
     this.canBackspace = true,
+    this.touchEnabled = true,
+    this.onTouchBlocked,
   });
 
   final String display;
@@ -39,6 +41,8 @@ class CalcDisplayPanel extends StatelessWidget {
   final String? copyLabel;
   final String? pasteLabel;
   final bool canBackspace;
+  final bool touchEnabled;
+  final VoidCallback? onTouchBlocked;
 
   String _fmt(String s) =>
       DigitLocale.formatDisplay(s, usePersianDigits: usePersianDigits);
@@ -50,14 +54,17 @@ class CalcDisplayPanel extends StatelessWidget {
     final width = MediaQuery.sizeOf(context).width;
     final shown = isError ? error! : _fmt(display);
     final exprShown = _fmt(expression);
-    final runningShown =
-        runningTotal != null ? _fmt(runningTotal!) : null;
+    final runningShown = runningTotal != null ? _fmt(runningTotal!) : null;
 
     final displayStyle = theme.textTheme.displayLarge?.copyWith(
       fontFeatures: const [FontFeature.tabularFigures()],
       fontWeight: FontWeight.w300,
       letterSpacing: -0.5,
-      fontSize: width > 600 ? 56 : width > 360 ? 44 : 36,
+      fontSize: width > 600
+          ? 56
+          : width > 360
+          ? 44
+          : 36,
       color: isError ? theme.colorScheme.error : theme.colorScheme.onSurface,
     );
 
@@ -73,77 +80,89 @@ class CalcDisplayPanel extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      reverse: true,
-                      child: Text(
-                        exprShown,
-                        key: const Key('expression'),
-                        textAlign: TextAlign.end,
-                        maxLines: 1,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          fontFeatures: const [FontFeature.tabularFigures()],
-                        ),
-                      ),
-                    ),
-                    if (runningShown != null) ...[
-                      const SizedBox(height: 2),
-                      Semantics(
-                        label: runningTotalLabel?.call(runningShown) ??
-                            'Running total: $runningShown',
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        reverse: true,
                         child: Text(
-                          runningShown,
-                          key: const Key('running_total'),
+                          exprShown,
+                          key: const Key('expression'),
                           textAlign: TextAlign.end,
                           maxLines: 1,
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: theme.colorScheme.primary,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
                             fontFeatures: const [FontFeature.tabularFigures()],
-                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
+                      if (runningShown != null) ...[
+                        const SizedBox(height: 2),
+                        Semantics(
+                          label:
+                              runningTotalLabel?.call(runningShown) ??
+                              'Running total: $runningShown',
+                          child: Text(
+                            runningShown,
+                            key: const Key('running_total'),
+                            textAlign: TextAlign.end,
+                            maxLines: 1,
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.colorScheme.primary,
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-              ),
-              if (onBackspace != null)
-                Semantics(
-                  button: true,
-                  enabled: canBackspace,
-                  label: backspaceLabel ?? 'Backspace',
-                  child: IconButton(
-                    key: const Key('btn_backspace'),
-                    tooltip: backspaceLabel ?? 'Backspace',
-                    onPressed: canBackspace ? onBackspace : null,
-                    icon: Icon(
-                      Icons.backspace_outlined,
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
                   ),
                 ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Expanded(
-            child: _DisplaySwipeArea(
-              onBackspace: onBackspace,
-              onCopy: onCopy,
-              onPaste: onPaste,
-              onSwipeDown: onSwipeDown,
-              copyLabel: copyLabel,
-              pasteLabel: pasteLabel,
-              isError: isError,
-              shown: shown,
-              displayStyle: displayStyle,
-              semanticsLabel: isError
-                  ? (displayErrorLabel?.call(error!) ??
-                      'Error: ${error!}')
-                  : (displayResultLabel?.call(shown) ?? 'Result: $shown'),
+                if (onBackspace != null)
+                  Semantics(
+                    button: true,
+                    enabled: canBackspace && touchEnabled,
+                    label: backspaceLabel ?? 'Backspace',
+                    child: IconButton(
+                      key: const Key('btn_backspace'),
+                      tooltip: backspaceLabel ?? 'Backspace',
+                      onPressed: !canBackspace
+                          ? null
+                          : () {
+                              if (!touchEnabled) {
+                                onTouchBlocked?.call();
+                                return;
+                              }
+                              onBackspace!();
+                            },
+                      icon: Icon(
+                        Icons.backspace_outlined,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Expanded(
+              child: _DisplaySwipeArea(
+                onBackspace: onBackspace,
+                onCopy: onCopy,
+                onPaste: onPaste,
+                onSwipeDown: onSwipeDown,
+                copyLabel: copyLabel,
+                pasteLabel: pasteLabel,
+                touchEnabled: touchEnabled,
+                onTouchBlocked: onTouchBlocked,
+                isError: isError,
+                shown: shown,
+                displayStyle: displayStyle,
+                semanticsLabel: isError
+                    ? (displayErrorLabel?.call(error!) ?? 'Error: ${error!}')
+                    : (displayResultLabel?.call(shown) ?? 'Result: $shown'),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -163,6 +182,8 @@ class _DisplaySwipeArea extends StatefulWidget {
     this.onSwipeDown,
     this.copyLabel,
     this.pasteLabel,
+    this.touchEnabled = true,
+    this.onTouchBlocked,
   });
 
   final String shown;
@@ -175,6 +196,8 @@ class _DisplaySwipeArea extends StatefulWidget {
   final VoidCallback? onSwipeDown;
   final String? copyLabel;
   final String? pasteLabel;
+  final bool touchEnabled;
+  final VoidCallback? onTouchBlocked;
 
   @override
   State<_DisplaySwipeArea> createState() => _DisplaySwipeAreaState();
@@ -184,12 +207,20 @@ class _DisplaySwipeAreaState extends State<_DisplaySwipeArea> {
   double _horizontalDrag = 0;
   double _verticalDrag = 0;
 
+  bool _guardTouch() {
+    if (widget.touchEnabled) return true;
+    widget.onTouchBlocked?.call();
+    return false;
+  }
+
   Future<void> _showCopyPasteMenu(Offset globalPosition) async {
+    if (!_guardTouch()) return;
     final onCopy = widget.onCopy;
     final onPaste = widget.onPaste;
     if (onCopy == null && onPaste == null) return;
 
-    final overlay = Overlay.of(context).context.findRenderObject() as RenderBox?;
+    final overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox?;
     if (overlay == null) return;
 
     final position = RelativeRect.fromRect(
@@ -202,10 +233,7 @@ class _DisplaySwipeAreaState extends State<_DisplaySwipeArea> {
       position: position,
       items: [
         if (onCopy != null)
-          PopupMenuItem(
-            value: 'copy',
-            child: Text(widget.copyLabel ?? 'Copy'),
-          ),
+          PopupMenuItem(value: 'copy', child: Text(widget.copyLabel ?? 'Copy')),
         if (onPaste != null)
           PopupMenuItem(
             value: 'paste',
@@ -230,20 +258,34 @@ class _DisplaySwipeAreaState extends State<_DisplaySwipeArea> {
     return GestureDetector(
       key: const Key('display_gesture'),
       behavior: HitTestBehavior.opaque,
-      onDoubleTap: widget.onCopy,
-      onLongPressStart: (details) =>
-          _showCopyPasteMenu(details.globalPosition),
+      onDoubleTap: widget.onCopy == null
+          ? null
+          : () {
+              if (!_guardTouch()) return;
+              widget.onCopy!();
+            },
+      onLongPressStart: (details) => _showCopyPasteMenu(details.globalPosition),
       onSecondaryTapDown: (details) =>
           _showCopyPasteMenu(details.globalPosition),
       onHorizontalDragStart: widget.onBackspace == null
           ? null
-          : (_) => _horizontalDrag = 0,
+          : (_) {
+              if (!_guardTouch()) return;
+              _horizontalDrag = 0;
+            },
       onHorizontalDragUpdate: widget.onBackspace == null
           ? null
-          : (details) => _horizontalDrag += details.primaryDelta ?? 0,
+          : (details) {
+              if (!widget.touchEnabled) return;
+              _horizontalDrag += details.primaryDelta ?? 0;
+            },
       onHorizontalDragEnd: widget.onBackspace == null
           ? null
           : (details) {
+              if (!widget.touchEnabled) {
+                _horizontalDrag = 0;
+                return;
+              }
               final velocity = details.primaryVelocity ?? 0;
               if (_horizontalDrag < -48 || velocity < -280) {
                 widget.onBackspace!();
@@ -252,13 +294,23 @@ class _DisplaySwipeAreaState extends State<_DisplaySwipeArea> {
             },
       onVerticalDragStart: widget.onSwipeDown == null
           ? null
-          : (_) => _verticalDrag = 0,
+          : (_) {
+              if (!_guardTouch()) return;
+              _verticalDrag = 0;
+            },
       onVerticalDragUpdate: widget.onSwipeDown == null
           ? null
-          : (details) => _verticalDrag += details.primaryDelta ?? 0,
+          : (details) {
+              if (!widget.touchEnabled) return;
+              _verticalDrag += details.primaryDelta ?? 0;
+            },
       onVerticalDragEnd: widget.onSwipeDown == null
           ? null
           : (details) {
+              if (!widget.touchEnabled) {
+                _verticalDrag = 0;
+                return;
+              }
               final velocity = details.primaryVelocity ?? 0;
               if (_verticalDrag > 48 || velocity > 280) {
                 widget.onSwipeDown!();

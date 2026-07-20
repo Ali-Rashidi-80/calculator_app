@@ -91,10 +91,7 @@ void main() {
 
   group('Persian decimal separator', () {
     test('formatDisplay uses Arabic decimal mark', () {
-      expect(
-        DigitLocale.formatDisplay('3.14', usePersianDigits: true),
-        '۳٫۱۴',
-      );
+      expect(DigitLocale.formatDisplay('3.14', usePersianDigits: true), '۳٫۱۴');
     });
   });
 
@@ -107,7 +104,9 @@ void main() {
       expect(displayText(tester), '0');
     });
 
-    testWidgets('equals evaluates chain when pending op exists', (tester) async {
+    testWidgets('equals evaluates chain when pending op exists', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(390, 844));
       await pumpCalculatorApp(tester);
 

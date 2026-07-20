@@ -132,7 +132,8 @@ class _CalcButtonState extends State<CalcButton> {
             onTapUp: (_) => setState(() => _pressed = false),
             onTapCancel: () => setState(() => _pressed = false),
             onTap: widget.enabled ? _handleTap : null,
-            onLongPress: widget.enabled &&
+            onLongPress:
+                widget.enabled &&
                     widget.touchEnabled &&
                     widget.onLongPress != null
                 ? _handleLongPress

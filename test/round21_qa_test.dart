@@ -19,7 +19,9 @@ void main() {
   });
 
   group('Keyboard shortcuts UX', () {
-    testWidgets('desktop shows keyboard icon not long one-liner', (tester) async {
+    testWidgets('desktop shows keyboard icon not long one-liner', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(1280, 800));
       await pumpCalculatorApp(tester);
 

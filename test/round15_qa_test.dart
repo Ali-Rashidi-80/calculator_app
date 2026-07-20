@@ -43,7 +43,9 @@ void main() {
   });
 
   group('Memory persist when session restore off (#2315)', () {
-    testWidgets('memory restored after relaunch with restoreSession off', (tester) async {
+    testWidgets('memory restored after relaunch with restoreSession off', (
+      tester,
+    ) async {
       SharedPreferences.setMockInitialValues({
         'restore_session': false,
         'calc_memory_v1': 42.0,

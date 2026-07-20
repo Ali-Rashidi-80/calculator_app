@@ -91,7 +91,9 @@ void main() {
   });
 
   group('History entry semantics wiring', () {
-    testWidgets('history tile exists after calculation on wide layout', (tester) async {
+    testWidgets('history tile exists after calculation on wide layout', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(1280, 900));
       await pumpCalculatorApp(tester);
 

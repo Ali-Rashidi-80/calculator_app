@@ -106,7 +106,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get keyboardShortcutNavKeys =>
-      'فلش‌ها = جابجایی فوکوس · Home / End · Space یا Enter = مساوی · Esc = پاک همه';
+      'فلش‌ها = جابجایی فوکوس · Home / End · Space = فعال‌سازی کلید فوکوس‌شده · Enter = مساوی · Esc = پاک همه';
 
   @override
   String get keyboardShortcutEdit => 'ویرایش';

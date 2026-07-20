@@ -44,8 +44,11 @@ class KeyboardShortcutsSection extends StatelessWidget {
           Row(
             textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
             children: [
-              Icon(Icons.keyboard_outlined,
-                  size: 20, color: theme.colorScheme.primary),
+              Icon(
+                Icons.keyboard_outlined,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -95,39 +98,38 @@ class KeyboardShortcutsSection extends StatelessWidget {
 
   static List<({IconData icon, String title, String keys})> _groups(
     AppLocalizations l10n,
-  ) =>
-      [
-        (
-          icon: Icons.ads_click_outlined,
-          title: l10n.keyboardShortcutNav,
-          keys: l10n.keyboardShortcutNavKeys,
-        ),
-        (
-          icon: Icons.edit_note_outlined,
-          title: l10n.keyboardShortcutEdit,
-          keys: l10n.keyboardShortcutEditKeys,
-        ),
-        (
-          icon: Icons.save_outlined,
-          title: l10n.keyboardShortcutMemory,
-          keys: l10n.keyboardShortcutMemoryKeys,
-        ),
-        (
-          icon: Icons.history,
-          title: l10n.keyboardShortcutHistory,
-          keys: l10n.keyboardShortcutHistoryKeys,
-        ),
-        (
-          icon: Icons.content_copy_outlined,
-          title: l10n.keyboardShortcutCopy,
-          keys: l10n.keyboardShortcutCopyKeys,
-        ),
-        (
-          icon: Icons.exposure_neg_1_outlined,
-          title: l10n.keyboardShortcutSign,
-          keys: l10n.keyboardShortcutSignKeys,
-        ),
-      ];
+  ) => [
+    (
+      icon: Icons.ads_click_outlined,
+      title: l10n.keyboardShortcutNav,
+      keys: l10n.keyboardShortcutNavKeys,
+    ),
+    (
+      icon: Icons.edit_note_outlined,
+      title: l10n.keyboardShortcutEdit,
+      keys: l10n.keyboardShortcutEditKeys,
+    ),
+    (
+      icon: Icons.save_outlined,
+      title: l10n.keyboardShortcutMemory,
+      keys: l10n.keyboardShortcutMemoryKeys,
+    ),
+    (
+      icon: Icons.history,
+      title: l10n.keyboardShortcutHistory,
+      keys: l10n.keyboardShortcutHistoryKeys,
+    ),
+    (
+      icon: Icons.content_copy_outlined,
+      title: l10n.keyboardShortcutCopy,
+      keys: l10n.keyboardShortcutCopyKeys,
+    ),
+    (
+      icon: Icons.exposure_neg_1_outlined,
+      title: l10n.keyboardShortcutSign,
+      keys: l10n.keyboardShortcutSignKeys,
+    ),
+  ];
 }
 
 class _ShortcutGroupCard extends StatelessWidget {
@@ -151,7 +153,9 @@ class _ShortcutGroupCard extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.45),
+        color: theme.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.45,
+        ),
         borderRadius: BorderRadius.circular(compact ? 14 : 16),
         border: Border.all(
           color: theme.colorScheme.outlineVariant.withValues(alpha: 0.35),
@@ -190,7 +194,9 @@ class _ShortcutGroupCard extends StatelessWidget {
               runSpacing: 8,
               alignment: isRtl ? WrapAlignment.end : WrapAlignment.start,
               textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
-              children: items.map((item) => _ShortcutChip(label: item)).toList(),
+              children: items
+                  .map((item) => _ShortcutChip(label: item))
+                  .toList(),
             ),
           ],
         ),
@@ -250,12 +256,14 @@ Future<void> showKeyboardShortcutsDialog(BuildContext context) {
           children: [
             DecoratedBox(
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest
-                    .withValues(alpha: 0.35),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.35,
+                ),
                 border: Border(
                   bottom: BorderSide(
-                    color: theme.colorScheme.outlineVariant
-                        .withValues(alpha: 0.35),
+                    color: theme.colorScheme.outlineVariant.withValues(
+                      alpha: 0.35,
+                    ),
                   ),
                 ),
               ),

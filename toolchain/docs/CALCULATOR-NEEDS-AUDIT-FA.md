@@ -1,7 +1,7 @@
 # نیازسنجی جامع ماشین‌حساب | calculator_app
 
-**تاریخ:** ۳ ژوئیه ۲۰۲۶ (به‌روز: v1.20 — دور بیستم: multiline paste + display menu + Shift+Insert)  
-**منابع:** GitHub microsoft/calculator (#1810, #1947, #2448), Pearson keypad a11y, WCAG 2.1, iOS 18, بازار/مایکت  
+**تاریخ:** ۲۰ ژوئیه ۲۰۲۶ (به‌روز: v1.24 — دور بیست‌وسوم: paste locale + loadResult + touch lock + % ×/÷)  
+**منابع:** GitHub microsoft/calculator (#1810, #1947, #2448, #2396, #162), Pearson keypad a11y, WCAG 2.1, iOS 18, بازار/مایکت  
 **هدف:** فهرست اتمیک ایرادات، بهبودها و نیازمندی‌ها برای اپ Flutter فعلی
 
 ---
@@ -10,12 +10,12 @@
 
 | وضعیت | تعداد |
 |-------|-------|
-| **رفع‌شده تا v1.20** | ۱۷۴+ مورد |
+| **رفع‌شده تا v1.24** | ۱۸۲+ مورد |
 | **P0 — باید باشد** | ۱۲ مورد — **همه ✅** |
 | **P1 — بهبود مهم** | ۳۰ مورد — **همه ✅** |
 | **P2 — آینده / scientific** | ۱۰ مورد |
 
-اپ فعلی **ماشین‌حساب استاندارد production-ready** با responsive کامل، **۲۵۴+ تست**، smoke CI و پوشش viewport 320→1920px.
+اپ فعلی **ماشین‌حساب استاندارد production-ready** با responsive کامل، **۲۷۵ تست**، smoke CI و پوشش viewport 320→1920px.
 
 ### مزیت رقابتی نسبت به iOS 18 / اپ‌های ایرانی
 - ✅ **repeat `=`** (iOS 18 حذف کرد — شکایت گسترده)
@@ -391,6 +391,38 @@
 | `test/round15_qa_test.dart` | 7 tests Persian/load/memory/history |
 
 **تست‌ها:** 219 PASS · smoke 21/21 · `flutter analyze` clean
+
+---
+
+### v1.24 — دور بیست‌وسوم (paste locale + loadResult + touch lock + % ×/÷)
+| فایل | تغییر |
+|------|-------|
+| `lib/utils/digit_locale.dart` | EU/US dual-separator paste (`1.234,56` / `1,234.56`) |
+| `lib/utils/paste_parser.dart` | normalize قبل از allowlist · per-token در expression |
+| `lib/calculator.dart` | loadResult clears `_lastOp` · % ×/÷ = value/100 |
+| `lib/settings/app_settings.dart` | usePersianDigits مستقل · FA switch-in defaults ON |
+| `lib/ui/widgets/calc_display_panel.dart` | touch lock روی gestures |
+| `lib/ui/widgets/calc_memory_bar.dart` | touch lock روی M+/MR |
+| `lib/ui/calculator_page.dart` | dispose-safe `_persist` · %/MR catch · Space docs |
+| `test/round23_qa_test.dart` | 12 honest High tests |
+
+**تست‌ها:** 275 PASS · `flutter analyze` (info-only curly braces pre-existing) · format clean
+
+---
+
+## ۳۰. ماتریس دور بیست‌وسوم — Final Polish High
+
+| ID | نیاز | منبع | v1.24 |
+|----|------|------|------|
+| R23-01 | Paste EU/US comma/dot | MS #2396 | ✅ |
+| R23-02 | loadResult clears equals-repeat | history reuse | ✅ |
+| R23-03 | touch lock display+memory | pocket mode | ✅ |
+| R23-04 | Space ≠ equals docs | honest UX | ✅ |
+| R23-05 | % ×/÷ Windows Standard | Win calc | ✅ |
+| R23-06 | FA digits toggle OFF | settings | ✅ |
+| R23-07 | dispose/_persist snapshot | lifecycle | ✅ |
+| R23-08 | %/MR error catch | overflow safety | ✅ |
+| R23-09 | 275 honest tests | user request | ✅ |
 
 ---
 

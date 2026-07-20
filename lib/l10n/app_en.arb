@@ -31,7 +31,7 @@
   "keyboardShortcutsTitle": "Keyboard shortcuts",
   "keyboardShortcutsTooltip": "Keyboard shortcuts",
   "keyboardShortcutNav": "Navigate",
-  "keyboardShortcutNavKeys": "Arrow keys move focus · Home / End · Space or Enter = equals · Esc = clear all",
+  "keyboardShortcutNavKeys": "Arrow keys move focus · Home / End · Space = activate focused key · Enter = equals · Esc = clear all",
   "keyboardShortcutEdit": "Edit",
   "keyboardShortcutEditKeys": "Ctrl+Z undo · Ctrl+Y redo · Ctrl+V paste · Shift+Insert paste · Backspace · Delete = clear entry",
   "keyboardShortcutMemory": "Memory",

@@ -24,11 +24,11 @@ void main() {
     testWidgets('Ctrl+V works when history has entries', (tester) async {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(SystemChannels.platform, (call) async {
-        if (call.method == 'Clipboard.getData') {
-          return {'text': '99'};
-        }
-        return null;
-      });
+            if (call.method == 'Clipboard.getData') {
+              return {'text': '99'};
+            }
+            return null;
+          });
       addTearDown(() {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(SystemChannels.platform, null);
@@ -57,11 +57,11 @@ void main() {
     testWidgets('Shift+Insert pastes from clipboard', (tester) async {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(SystemChannels.platform, (call) async {
-        if (call.method == 'Clipboard.getData') {
-          return {'text': '77'};
-        }
-        return null;
-      });
+            if (call.method == 'Clipboard.getData') {
+              return {'text': '77'};
+            }
+            return null;
+          });
       addTearDown(() {
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
             .setMockMethodCallHandler(SystemChannels.platform, null);

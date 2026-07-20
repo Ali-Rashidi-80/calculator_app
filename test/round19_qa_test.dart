@@ -44,7 +44,9 @@ void main() {
   });
 
   group('Settings restoreSession hint fix', () {
-    testWidgets('restoreSession shows dedicated hint not swipe hint', (tester) async {
+    testWidgets('restoreSession shows dedicated hint not swipe hint', (
+      tester,
+    ) async {
       setTestViewport(tester, const Size(390, 844));
       await pumpCalculatorApp(tester);
 
@@ -68,7 +70,9 @@ void main() {
   });
 
   group('History persist default (#2392)', () {
-    testWidgets('history survives relaunch with default settings', (tester) async {
+    testWidgets('history survives relaunch with default settings', (
+      tester,
+    ) async {
       SharedPreferences.setMockInitialValues({});
       setTestViewport(tester, const Size(1280, 900));
       final settings = await AppSettings.load();

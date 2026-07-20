@@ -29,7 +29,8 @@ class CalculatorPage extends StatefulWidget {
   State<CalculatorPage> createState() => _CalculatorPageState();
 }
 
-class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObserver {
+class _CalculatorPageState extends State<CalculatorPage>
+    with WidgetsBindingObserver {
   final Calculator _calc = Calculator();
   final FocusNode _focusNode = FocusNode();
   CalcPersistence? _persistence;
@@ -107,10 +108,15 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
   Future<void> _persist() async {
     final p = _persistence;
     if (p == null || !_loaded) return;
-    await p.writeSession(_calc.exportSession());
-    await p.writeMemory(_calc.memoryValue);
-    if (widget.settings.persistHistory) {
-      await p.writeHistory(_calc.history.entries);
+    // Snapshot before awaits — dispose may have run (H7).
+    final persistHistory = widget.settings.persistHistory;
+    final session = _calc.exportSession();
+    final memory = _calc.memoryValue;
+    final history = List.of(_calc.history.entries);
+    await p.writeSession(session);
+    await p.writeMemory(memory);
+    if (persistHistory) {
+      await p.writeHistory(history);
     } else {
       await p.writeHistory([]);
     }
@@ -193,10 +199,14 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
       _showBriefHint(_l10n.nothingInMemory);
       return;
     }
-    _calc.memoryRecall();
-    _refresh(clearError: true);
-    _persist();
-    _announce(_l10n.memoryRecalled);
+    try {
+      _calc.memoryRecall();
+      _refresh(clearError: true);
+      _persist();
+      _announce(_l10n.memoryRecalled);
+    } on CalculatorError catch (e) {
+      _handleCalcError(e);
+    }
   }
 
   void _onMemoryClear() {
@@ -282,7 +292,10 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
   Future<void> _copyText(String text) async {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(_l10n.copied), duration: const Duration(seconds: 1)),
+      SnackBar(
+        content: Text(_l10n.copied),
+        duration: const Duration(seconds: 1),
+      ),
     );
     try {
       await Clipboard.setData(ClipboardData(text: text));
@@ -290,7 +303,10 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
       if (!mounted) return;
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_l10n.copyFailed), duration: const Duration(seconds: 2)),
+        SnackBar(
+          content: Text(_l10n.copyFailed),
+          duration: const Duration(seconds: 2),
+        ),
       );
     }
   }
@@ -421,7 +437,8 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
               _clearHistory(announce: true);
               Navigator.pop(ctx);
             },
-            onReuse: (e) => _onReuseHistory(e, closeSheet: () => Navigator.pop(ctx)),
+            onReuse: (e) =>
+                _onReuseHistory(e, closeSheet: () => Navigator.pop(ctx)),
             onDelete: _onDeleteHistory,
             onExport: _exportHistory,
             onCopyResult: _copyText,
@@ -488,8 +505,12 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
           _refresh(clearError: true);
         }
       case 'pct':
-        _calc.percent();
-        _refresh(clearError: true);
+        try {
+          _calc.percent();
+          _refresh(clearError: true);
+        } on CalculatorError catch (e) {
+          _handleCalcError(e);
+        }
       case 'div':
         _onOp('÷');
       case '7':
@@ -646,8 +667,7 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
     }
     if (key == LogicalKeyboardKey.end) {
       setState(
-        () => _keypadFocusId =
-            _calc.canEquals ? CalcKeypadGrid.endKey : 'add',
+        () => _keypadFocusId = _calc.canEquals ? CalcKeypadGrid.endKey : 'add',
       );
       return KeyEventResult.handled;
     }
@@ -666,7 +686,8 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
       }
       return KeyEventResult.handled;
     }
-    if (key == LogicalKeyboardKey.escape || (!ctrl && label.toLowerCase() == 'c')) {
+    if (key == LogicalKeyboardKey.escape ||
+        (!ctrl && label.toLowerCase() == 'c')) {
       _onClear(announce: true);
       return KeyEventResult.handled;
     }
@@ -750,12 +771,7 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
       return KeyEventResult.handled;
     }
 
-    const opMap = {
-      '+': '+',
-      '-': '-',
-      '*': '×',
-      '/': '÷',
-    };
+    const opMap = {'+': '+', '-': '-', '*': '×', '/': '÷'};
     if (opMap.containsKey(label)) {
       _onOp(opMap[label]!);
       return KeyEventResult.handled;
@@ -797,8 +813,12 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
         _refresh(clearError: true);
       },
       onPercent: () {
-        _calc.percent();
-        _refresh(clearError: true);
+        try {
+          _calc.percent();
+          _refresh(clearError: true);
+        } on CalculatorError catch (e) {
+          _handleCalcError(e);
+        }
       },
       onDivide: () => _onOp('÷'),
       onDigit: _onDigit,
@@ -841,8 +861,9 @@ class _CalculatorPageState extends State<CalculatorPage> with WidgetsBindingObse
           tooltip: l10n.settings,
           onPressed: () {
             showCalcSettingsSheet(context, widget.settings).then((_) {
-              WidgetsBinding.instance
-                  .addPostFrameCallback((_) => _refocusKeyboard());
+              WidgetsBinding.instance.addPostFrameCallback(
+                (_) => _refocusKeyboard(),
+              );
             });
           },
           icon: Icon(
@@ -1015,8 +1036,7 @@ class _CalculatorCard extends StatelessWidget {
                 child: CalcDisplayPanel(
                   display: calc.display,
                   expression: calc.expression,
-                  runningTotal:
-                      showRunningTotal ? calc.runningTotal : null,
+                  runningTotal: showRunningTotal ? calc.runningTotal : null,
                   error: error,
                   usePersianDigits: usePersianDigits,
                   runningTotalLabel: (t) => l10n.runningTotalPreview(t),
@@ -1024,6 +1044,8 @@ class _CalculatorCard extends StatelessWidget {
                   displayErrorLabel: (m) => l10n.semanticsDisplayError(m),
                   backspaceLabel: l10n.semanticsBackspace,
                   canBackspace: calc.canBackspace,
+                  touchEnabled: touchEnabled,
+                  onTouchBlocked: onTouchBlocked,
                   onSwipeDown: onSwipeDown,
                   onBackspace: onBackspace,
                   onCopy: onCopy,
@@ -1034,6 +1056,8 @@ class _CalculatorCard extends StatelessWidget {
               ),
               CalcMemoryBar(
                 hasMemory: calc.hasMemory,
+                touchEnabled: touchEnabled,
+                onTouchBlocked: onTouchBlocked,
                 onAdd: onMemoryAdd,
                 onSubtract: onMemorySubtract,
                 onRecall: onMemoryRecall,

@@ -14,11 +14,11 @@ class CalcHistoryEntry {
   String get line => '$expression = $result';
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'expression': expression,
-        'result': result,
-        'at': at.toIso8601String(),
-      };
+    'id': id,
+    'expression': expression,
+    'result': result,
+    'at': at.toIso8601String(),
+  };
 
   factory CalcHistoryEntry.fromJson(Map<String, dynamic> json) {
     return CalcHistoryEntry(

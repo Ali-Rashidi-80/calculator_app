@@ -11,6 +11,8 @@ class CalcMemoryBar extends StatelessWidget {
     required this.onSubtract,
     required this.onRecall,
     required this.onClear,
+    this.touchEnabled = true,
+    this.onTouchBlocked,
   });
 
   final bool hasMemory;
@@ -18,6 +20,16 @@ class CalcMemoryBar extends StatelessWidget {
   final VoidCallback onSubtract;
   final VoidCallback onRecall;
   final VoidCallback onClear;
+  final bool touchEnabled;
+  final VoidCallback? onTouchBlocked;
+
+  void _tap(VoidCallback action) {
+    if (!touchEnabled) {
+      onTouchBlocked?.call();
+      return;
+    }
+    action();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +47,10 @@ class CalcMemoryBar extends StatelessWidget {
                 child: Container(
                   key: const Key('memory_indicator'),
                   margin: const EdgeInsetsDirectional.only(end: 4),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: theme.colorScheme.primary.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
@@ -55,27 +69,27 @@ class CalcMemoryBar extends StatelessWidget {
               key: const Key('btn_m_add'),
               label: 'M+',
               tooltip: l10n.memoryAdd,
-              onTap: onAdd,
+              onTap: () => _tap(onAdd),
             ),
             _MemBtn(
               key: const Key('btn_m_sub'),
               label: 'M−',
               tooltip: l10n.memorySubtract,
-              onTap: onSubtract,
+              onTap: () => _tap(onSubtract),
             ),
             _MemBtn(
               key: const Key('btn_m_recall'),
               label: 'MR',
               tooltip: l10n.memoryRecall,
-              onTap: onRecall,
-              enabled: hasMemory,
+              onTap: () => _tap(onRecall),
+              enabled: hasMemory && touchEnabled,
             ),
             _MemBtn(
               key: const Key('btn_m_clear'),
               label: 'MC',
               tooltip: l10n.memoryClear,
-              onTap: onClear,
-              enabled: hasMemory,
+              onTap: () => _tap(onClear),
+              enabled: hasMemory && touchEnabled,
             ),
           ],
         ),
@@ -125,7 +139,10 @@ class _MemBtn extends StatelessWidget {
             child: Tooltip(
               message: tooltip,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 child: Text(label, style: fg),
               ),
             ),

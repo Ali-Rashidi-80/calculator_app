@@ -162,8 +162,10 @@ void main() {
       for (var i = 0; i < Calculator.maxDisplayLength + 2; i++) {
         calc.inputDigit('1');
       }
-      expect(calc.display.replaceAll('.', '').replaceAll('-', '').length,
-          lessThanOrEqualTo(Calculator.maxDisplayLength));
+      expect(
+        calc.display.replaceAll('.', '').replaceAll('-', '').length,
+        lessThanOrEqualTo(Calculator.maxDisplayLength),
+      );
     });
 
     test('repeat equals applies last operation', () {

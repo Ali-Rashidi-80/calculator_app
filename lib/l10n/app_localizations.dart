@@ -287,7 +287,7 @@ abstract class AppLocalizations {
   /// No description provided for @keyboardShortcutNavKeys.
   ///
   /// In en, this message translates to:
-  /// **'Arrow keys move focus · Home / End · Space or Enter = equals · Esc = clear all'**
+  /// **'Arrow keys move focus · Home / End · Space = activate focused key · Enter = equals · Esc = clear all'**
   String get keyboardShortcutNavKeys;
 
   /// No description provided for @keyboardShortcutEdit.
